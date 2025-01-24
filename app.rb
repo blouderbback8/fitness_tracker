@@ -1,3 +1,4 @@
+require 'sinatra/reloader' if development?
 require 'sinatra'
 require 'sqlite3'
 
