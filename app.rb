@@ -106,8 +106,9 @@ __END__
   <h2>Calendar</h2>
   <div class="calendar-grid">
     <% require 'date' %>
-    <% start_date = Date.today.beginning_of_month %>
-    <% end_date = Date.today.end_of_month %>
+    <% start_date = Date.new(Date.today.year, Date.today.month, 1) %>
+    <% end_date = Date.new(Date.today.year, Date.today.month, -1) %>
+
     
     <% (start_date..end_date).each do |date| %>
       <div class="calendar-day" data-date="<%= date.to_s %>">
