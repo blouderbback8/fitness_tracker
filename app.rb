@@ -1,5 +1,12 @@
 require 'sinatra'
 require 'sqlite3'
+require 'json'
+require 'date'
+
+# Set up Sinatra to serve static files from the public directory
+configure do
+  set :public_folder, File.expand_path('public', __dir__)
+end
 
 # Create or open the SQLite database
 DB = SQLite3::Database.new "fitness_tracker.db"
@@ -33,6 +40,7 @@ get '/' do
   @workouts_by_date = @workouts.group_by { |w| w["date"] }
   @indulgences_by_date = @indulgences.group_by { |i| i["date"] }
 
+  puts "Rendering index.erb"
   erb :index
 end
 
@@ -45,7 +53,7 @@ end
 
 # Route to add a new indulgence
 post '/add_indulgence' do
-  DB.execute("INSERT INTO indulgences (name, calories, date) VALUES (?, ?, ?) ",
+  DB.execute("INSERT INTO indulgences (name, calories, date) VALUES (?, ?, ?)",
              [params[:name], params[:calories], params[:date]])
   redirect '/'
 end
@@ -61,76 +69,13 @@ post '/update_date' do
   status 200
 end
 
-# Route to serve JavaScript and CSS
-get '/calendar.js' do
-  content_type 'application/javascript'
-  send_file 'public/calendar.js'
-end
-
+# Explicit routes for CSS and JS
 get '/style.css' do
   content_type 'text/css'
-  send_file 'public/style.css'
+  send_file File.join(settings.public_folder, 'style.css')
 end
 
-__END__
-
-@@ index
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Fitness Tracker</title>
-  <link rel="stylesheet" type="text/css" href="/style.css">
-  <script src="/calendar.js" defer></script>
-</head>
-<body>
-  <h1>Fitness Tracker</h1>
-
-  <div id="calendar"></div>
-
-  <form action="/add_workout" method="post">
-    <h2>Add a Workout</h2>
-    <input type="text" name="name" placeholder="Workout Name" required>
-    <input type="date" name="date" required>
-    <input type="number" name="duration" placeholder="Duration (minutes)" required>
-    <button type="submit">Add Workout</button>
-  </form>
-
-  <form action="/add_indulgence" method="post">
-    <h2>Add an Indulgence</h2>
-    <input type="text" name="name" placeholder="Indulgence Name" required>
-    <input type="number" name="calories" placeholder="Calories" required>
-    <input type="date" name="date" required>
-    <button type="submit">Add Indulgence</button>
-  </form>
-
-  <h2>Calendar</h2>
-  <div class="calendar-grid">
-    <% require 'date' %>
-    <% start_date = Date.new(Date.today.year, Date.today.month, 1) %>
-    <% end_date = Date.new(Date.today.year, Date.today.month, -1) %>
-
-    
-    <% (start_date..end_date).each do |date| %>
-      <div class="calendar-day" data-date="<%= date.to_s %>">
-        <strong><%= date.strftime("%b %d") %></strong>
-        <ul>
-          <% if @workouts_by_date[date.to_s] %>
-            <% @workouts_by_date[date.to_s].each do |workout| %>
-              <li class="workout" draggable="true" data-id="<%= workout["id"] %>">
-                🏋️ <%= workout["name"] %> - <%= workout["duration"] %> min
-              </li>
-            <% end %>
-          <% end %>
-          <% if @indulgences_by_date[date.to_s] %>
-            <% @indulgences_by_date[date.to_s].each do |indulgence| %>
-              <li class="indulgence" draggable="true" data-id="<%= indulgence["id"] %>">
-                🍔 <%= indulgence["name"] %> - <%= indulgence["calories"] %> cal
-              </li>
-            <% end %>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-  </div>
-</body>
-</html>
+get '/calendar.js' do
+  content_type 'application/javascript'
+  send_file File.join(settings.public_folder, 'calendar.js')
+end

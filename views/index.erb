@@ -1,0 +1,73 @@
+<h1>INDEX.ERB IS LOADED</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fitness Tracker</title>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+  <script src="/calendar.js" defer></script>
+</head>
+<body>
+  <h1>Fitness Tracker</h1>
+
+  <form action="/add_workout" method="post">
+    <h2>Add a Workout</h2>
+    <input type="text" name="name" placeholder="Workout Name" required>
+    <input type="date" name="date" required>
+    <input type="number" name="duration" placeholder="Duration (minutes)" required>
+    <button type="submit">Add Workout</button>
+  </form>
+
+  <form action="/add_indulgence" method="post">
+    <h2>Add an Indulgence</h2>
+    <input type="text" name="name" placeholder="Indulgence Name" required>
+    <input type="number" name="calories" placeholder="Calories" required>
+    <input type="date" name="date" required>
+    <button type="submit">Add Indulgence</button>
+  </form>
+
+  <h2>Workouts</h2>
+  <ul>
+    <% @workouts.each do |workout| %>
+      <li><strong><%= workout["name"] %></strong> on <%= workout["date"] %> for <%= workout["duration"] %> minutes</li>
+    <% end %>
+  </ul>
+
+  <h2>Indulgences</h2>
+  <ul>
+    <% @indulgences.each do |indulgence| %>
+      <li><strong><%= indulgence["name"] %></strong>: <%= indulgence["calories"] %> calories on <%= indulgence["date"] %></li>
+    <% end %>
+  </ul>
+
+  <h2>Calendar</h2>
+  <div class="calendar-container">
+    <div class="calendar-grid">
+      <% require 'date' %>
+      <% start_date = Date.new(Date.today.year, Date.today.month, 1) %>
+      <% end_date = Date.new(Date.today.year, Date.today.month, -1) %>
+
+      <% (start_date..end_date).each do |date| %>
+        <div class="calendar-day" data-date="<%= date.to_s %>">
+          <strong><%= date.strftime("%b %d") %></strong>
+          <ul>
+            <% if @workouts_by_date[date.to_s] %>
+              <% @workouts_by_date[date.to_s].each do |workout| %>
+                <li class="workout" draggable="true" data-id="<%= workout["id"] %>">
+                  🏋️ <%= workout["name"] %> - <%= workout["duration"] %> min
+                </li>
+              <% end %>
+            <% end %>
+            <% if @indulgences_by_date[date.to_s] %>
+              <% @indulgences_by_date[date.to_s].each do |indulgence| %>
+                <li class="indulgence" draggable="true" data-id="<%= indulgence["id"] %>">
+                  🍔 <%= indulgence["name"] %> - <%= indulgence["calories"] %> cal
+                </li>
+              <% end %>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</body>
+</html>
