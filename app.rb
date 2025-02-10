@@ -1,9 +1,9 @@
-
 require 'sinatra'
 require 'sqlite3'
 
 # Create or open the SQLite database
 DB = SQLite3::Database.new "fitness_tracker.db"
+DB.results_as_hash = true  # Allows hash-style results
 
 # Ensure the database has the required tables
 DB.execute <<-SQL
@@ -29,9 +29,9 @@ get '/' do
   @workouts = DB.execute("SELECT * FROM workouts")
   @indulgences = DB.execute("SELECT * FROM indulgences")
 
-  # Calculate workout adjustments
-  total_calories = @indulgences.map { |indulgence| indulgence[2] }.sum
-  @extra_minutes = total_calories / 50  # Example: burn 50 calories per extra workout minute
+  # Convert workouts to a hash grouped by date for calendar display
+  @workouts_by_date = @workouts.group_by { |w| w["date"] }
+  @indulgences_by_date = @indulgences.group_by { |i| i["date"] }
 
   erb :index
 end
@@ -45,9 +45,31 @@ end
 
 # Route to add a new indulgence
 post '/add_indulgence' do
-  DB.execute("INSERT INTO indulgences (name, calories, date) VALUES (?, ?, ?)",
+  DB.execute("INSERT INTO indulgences (name, calories, date) VALUES (?, ?, ?) ",
              [params[:name], params[:calories], params[:date]])
   redirect '/'
+end
+
+# Route to update workout or indulgence date when dragged
+post '/update_date' do
+  data = JSON.parse(request.body.read)
+  if data["type"] == "workout"
+    DB.execute("UPDATE workouts SET date = ? WHERE id = ?", [data["date"], data["id"]])
+  else
+    DB.execute("UPDATE indulgences SET date = ? WHERE id = ?", [data["date"], data["id"]])
+  end
+  status 200
+end
+
+# Route to serve JavaScript and CSS
+get '/calendar.js' do
+  content_type 'application/javascript'
+  send_file 'public/calendar.js'
+end
+
+get '/style.css' do
+  content_type 'text/css'
+  send_file 'public/style.css'
 end
 
 __END__
@@ -57,65 +79,13 @@ __END__
 <html>
 <head>
   <title>Fitness Tracker</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    h1 {
-      background-color: #007bff;
-      color: white;
-      padding: 10px 20px;
-      text-align: center;
-      margin: 0;
-    }
-    form {
-      margin: 20px;
-      text-align: center;
-    }
-    input, button {
-      margin: 5px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 16px;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    h2 {
-      margin: 20px;
-      text-align: center;
-    }
-    ul {
-      list-style-type: none;
-      padding: 0;
-      text-align: center;
-    }
-    li {
-      margin: 10px 0;
-      padding: 10px;
-      background-color: #e9ecef;
-      border-radius: 4px;
-      display: inline-block;
-      width: 50%;
-    }
-    strong {
-      color: #007bff;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+  <script src="/calendar.js" defer></script>
 </head>
 <body>
   <h1>Fitness Tracker</h1>
+
+  <div id="calendar"></div>
 
   <form action="/add_workout" method="post">
     <h2>Add a Workout</h2>
@@ -133,21 +103,33 @@ __END__
     <button type="submit">Add Indulgence</button>
   </form>
 
-  <h2>Workouts</h2>
-  <ul>
-    <% @workouts.each do |workout| %>
-      <li><strong><%= workout[1] %></strong> on <%= workout[2] %> for <%= workout[3] %> minutes</li>
+  <h2>Calendar</h2>
+  <div class="calendar-grid">
+    <% require 'date' %>
+    <% start_date = Date.today.beginning_of_month %>
+    <% end_date = Date.today.end_of_month %>
+    
+    <% (start_date..end_date).each do |date| %>
+      <div class="calendar-day" data-date="<%= date.to_s %>">
+        <strong><%= date.strftime("%b %d") %></strong>
+        <ul>
+          <% if @workouts_by_date[date.to_s] %>
+            <% @workouts_by_date[date.to_s].each do |workout| %>
+              <li class="workout" draggable="true" data-id="<%= workout["id"] %>">
+                🏋️ <%= workout["name"] %> - <%= workout["duration"] %> min
+              </li>
+            <% end %>
+          <% end %>
+          <% if @indulgences_by_date[date.to_s] %>
+            <% @indulgences_by_date[date.to_s].each do |indulgence| %>
+              <li class="indulgence" draggable="true" data-id="<%= indulgence["id"] %>">
+                🍔 <%= indulgence["name"] %> - <%= indulgence["calories"] %> cal
+              </li>
+            <% end %>
+          <% end %>
+        </ul>
+      </div>
     <% end %>
-  </ul>
-
-  <h2>Indulgences</h2>
-  <ul>
-    <% @indulgences.each do |indulgence| %>
-      <li><strong><%= indulgence[1] %></strong>: <%= indulgence[2] %> calories on <%= indulgence[3] %></li>
-    <% end %>
-  </ul>
-
-  <h2>Workout Adjustment</h2>
-  <p>You need to add <strong><%= @extra_minutes %> minutes</strong> to your workouts this week to balance indulgences.</p>
+  </div>
 </body>
 </html>
