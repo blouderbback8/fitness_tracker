@@ -4,9 +4,7 @@ require 'json'
 require 'date'
 
 # Set up Sinatra to serve static files from the public directory
-configure do
-  set :public_folder, File.expand_path('public', __dir__)
-end
+set :public_folder, File.expand_path('public', __dir__)
 
 # Create or open the SQLite database
 DB = SQLite3::Database.new "fitness_tracker.db"
@@ -70,9 +68,9 @@ post '/update_date' do
 end
 
 # Explicit routes for CSS and JS
-get '/style.css' do
+get '/css/style.css' do
   content_type 'text/css'
-  send_file File.join(settings.public_folder, 'style.css')
+  send_file File.join(settings.public_folder, 'css', 'style.css')
 end
 
 get '/calendar.js' do
