@@ -14,6 +14,15 @@ CREATE TABLE IF NOT EXISTS indulgences (
 );
 ''')
 
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS workouts (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    duration INTEGER NOT NULL,
+    date TEXT NOT NULL
+);
+''')
+
 # Fetch all workouts and indulgences
 cursor.execute("SELECT * FROM workouts")
 workouts = cursor.fetchall()
