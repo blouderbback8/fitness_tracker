@@ -8,6 +8,11 @@
 <body>
   <h1>Fitness Tracker</h1>
 
+  <% if @cardio_required %>
+    <h2>🔥 Cardio Required!</h2>
+    <p>You indulged yesterday. You need to run for <strong>30 minutes</strong> today.</p>
+  <% end %>
+
   <form action="/add_workout" method="post">
     <h2>Add a Workout</h2>
     <input type="text" name="name" placeholder="Workout Name" required>
