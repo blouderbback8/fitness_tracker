@@ -23,7 +23,13 @@
 
   <form action="/add_indulgence" method="post">
     <h2>Add an Indulgence</h2>
-    <input type="text" name="name" placeholder="Indulgence Name" required>
+    <select name="name" required>
+      <option value="Dessert">Dessert</option>
+      <option value="Alcohol">Alcohol</option>
+      <option value="Fast Food">Fast Food</option>
+      <option value="Sugary Drink">Sugary Drink</option>
+      <option value="Snack">Snack</option>
+    </select>
     <input type="number" name="calories" placeholder="Calories" required>
     <input type="date" name="date" required>
     <button type="submit">Add Indulgence</button>

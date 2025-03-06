@@ -57,27 +57,25 @@ post '/add_workout' do
   redirect '/'
 end
 
-# Route to add a new indulgence (prevents alcohol on certain days)
 post '/add_indulgence' do
   date = params[:date]
   name = params[:name].downcase  # Normalize name for alcohol detection
+  day = Date.parse(date).strftime("%A").downcase  # Get day of the week
 
-  # Prevent alcohol logging on Jiu-Jitsu days (Mon/Wed/Fri)
-  if ["monday", "wednesday", "friday"].include?(Date.parse(date).strftime("%A").downcase) && name.include?("alcohol")
-    return "Alcohol logging is not allowed on Jiu-Jitsu days!", 400
-  end
+  puts "DEBUG: Trying to log #{name} on #{day}"  # Debugging output
 
-  # Prevent alcohol logging if an indulgence was already logged on Tue/Thu/Sun
-  indulgence_logged = DB.execute("SELECT * FROM indulgences WHERE date = ?", [date]).any?
-  if indulgence_logged && name.include?("alcohol")
-    return "You cannot log alcohol on the same day as another indulgence!", 400
+  # Prevent alcohol logging on the day before Jiu-Jitsu (Sunday, Tuesday, Thursday)
+  if ["sunday", "tuesday", "thursday"].include?(day) && name.include?("alcohol")
+    puts "DEBUG: Blocked alcohol logging on #{day}"  # Debugging output
+    return "🚫 Alcohol logging is not allowed the day before Jiu-Jitsu!", 400
   end
 
   DB.execute("INSERT INTO indulgences (name, calories, date) VALUES (?, ?, ?)",
              [params[:name], params[:calories], params[:date]])
-  
+
   redirect '/'
 end
+
 
 # Route to update workout or indulgence date when dragged
 post '/update_date' do
