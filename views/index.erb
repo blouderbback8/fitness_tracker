@@ -13,14 +13,15 @@
     <p>You indulged yesterday. You need to run for <strong>30 minutes</strong> today.</p>
   <% end %>
 
+  <!-- Add Workout Form -->
   <form action="/add_workout" method="post">
     <h2>Add a Workout</h2>
     <input type="text" name="name" placeholder="Workout Name" required>
     <input type="date" name="date" required>
-    <input type="number" name="duration" placeholder="Duration (minutes)" required>
     <button type="submit">Add Workout</button>
   </form>
 
+  <!-- Add Indulgence Form -->
   <form action="/add_indulgence" method="post">
     <h2>Add an Indulgence</h2>
     <select name="name" required>
@@ -30,25 +31,27 @@
       <option value="Sugary Drink">Sugary Drink</option>
       <option value="Snack">Snack</option>
     </select>
-    <input type="number" name="calories" placeholder="Calories" required>
     <input type="date" name="date" required>
     <button type="submit">Add Indulgence</button>
   </form>
 
+  <!-- Workouts Display -->
   <h2>Workouts</h2>
   <ul>
     <% @workouts.each do |workout| %>
-      <li><strong><%= workout["name"] %></strong> on <%= workout["date"] %> for <%= workout["duration"] %> minutes</li>
+      <li><strong><%= workout["name"] %></strong> on <%= workout["date"] %></li>
     <% end %>
   </ul>
 
+  <!-- Indulgences Display -->
   <h2>Indulgences</h2>
   <ul>
     <% @indulgences.each do |indulgence| %>
-      <li><strong><%= indulgence["name"] %></strong>: <%= indulgence["calories"] %> calories on <%= indulgence["date"] %></li>
+      <li><strong><%= indulgence["name"] %></strong> on <%= indulgence["date"] %></li>
     <% end %>
   </ul>
 
+  <!-- Calendar -->
   <h2>Calendar</h2>
   <div class="calendar-container">
     <div class="calendar-grid">
@@ -63,14 +66,14 @@
             <% if @workouts_by_date[date.to_s] %>
               <% @workouts_by_date[date.to_s].each do |workout| %>
                 <li class="workout" draggable="true" data-id="<%= workout["id"] %>">
-                  🏋️ <%= workout["name"] %> - <%= workout["duration"] %> min
+                  🏋️ <%= workout["name"] %>
                 </li>
               <% end %>
             <% end %>
             <% if @indulgences_by_date[date.to_s] %>
               <% @indulgences_by_date[date.to_s].each do |indulgence| %>
                 <li class="indulgence" draggable="true" data-id="<%= indulgence["id"] %>">
-                  🍔 <%= indulgence["name"] %> - <%= indulgence["calories"] %> cal
+                  🍔 <%= indulgence["name"] %>
                 </li>
               <% end %>
             <% end %>

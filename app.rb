@@ -1,4 +1,4 @@
-require 'sinatra' 
+require 'sinatra'
 require 'sqlite3'
 require 'json'
 require 'date'
@@ -15,7 +15,6 @@ DB.execute <<-SQL
   CREATE TABLE IF NOT EXISTS indulgences (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    calories INTEGER NOT NULL,
     date TEXT NOT NULL
   );
 SQL
@@ -29,18 +28,10 @@ DB.execute <<-SQL
   );
 SQL
 
-# Function to check if cardio is required today
-def cardio_required_today?
-  today = Date.today.to_s
-  indulgence = DB.execute("SELECT * FROM indulgences WHERE date = ?", [today]).first
-  !indulgence.nil?  # If there's an indulgence today, cardio is required
-end
-
 # Route to show the home page
 get '/' do
   @workouts = DB.execute("SELECT * FROM workouts")
   @indulgences = DB.execute("SELECT * FROM indulgences")
-  @cardio_required = cardio_required_today?
 
   # Convert workouts to a hash grouped by date for calendar display
   @workouts_by_date = @workouts.group_by { |w| w["date"] }
@@ -57,25 +48,12 @@ post '/add_workout' do
   redirect '/'
 end
 
+# Route to add a new indulgence (without calories)
 post '/add_indulgence' do
-  date = params[:date]
-  name = params[:name].downcase  # Normalize name for alcohol detection
-  day = Date.parse(date).strftime("%A").downcase  # Get day of the week
-
-  puts "DEBUG: Trying to log #{name} on #{day}"  # Debugging output
-
-  # Prevent alcohol logging on the day before Jiu-Jitsu (Sunday, Tuesday, Thursday)
-  if ["sunday", "tuesday", "thursday"].include?(day) && name.include?("alcohol")
-    puts "DEBUG: Blocked alcohol logging on #{day}"  # Debugging output
-    return "🚫 Alcohol logging is not allowed the day before Jiu-Jitsu!", 400
-  end
-
-  DB.execute("INSERT INTO indulgences (name, calories, date) VALUES (?, ?, ?)",
-             [params[:name], params[:calories], params[:date]])
-
+  DB.execute("INSERT INTO indulgences (name, date) VALUES (?, ?)",
+             [params[:name], params[:date]])
   redirect '/'
 end
-
 
 # Route to update workout or indulgence date when dragged
 post '/update_date' do
