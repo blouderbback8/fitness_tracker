@@ -8,79 +8,53 @@
 <body>
   <h1>Fitness Tracker</h1>
 
-  <% if @cardio_required %>
-    <h2>🔥 Cardio Required!</h2>
-    <p>You indulged yesterday. You need to run for <strong>30 minutes</strong> today.</p>
-  <% end %>
+  <h2>Day Planner</h2>
+<form id="day-planner-form">
+  <label for="planner-date">Select a Day:</label>
+  <input type="date" id="planner-date" name="date" required>
 
-  <!-- Add Workout Form -->
-  <form action="/add_workout" method="post">
-    <h2>Add a Workout</h2>
-    <input type="text" name="name" placeholder="Workout Name" required>
-    <input type="date" name="date" required>
-    <button type="submit">Add Workout</button>
-  </form>
+  <label for="planner-activity">Activity:</label>
+  <select id="planner-activity" name="activity">
+    <option value="Jiu-Jitsu">Jiu-Jitsu</option>
+    <option value="Cardio">Cardio</option>
+    <option value="Lifting">Lifting</option>
+    <option value="Alcohol">Alcohol</option>
+    <option value="Dessert">Dessert</option>
+    <option value="Fast Food">Fast Food</option>
+  </select>
 
-  <!-- Add Indulgence Form -->
-  <form action="/add_indulgence" method="post">
-    <h2>Add an Indulgence</h2>
-    <select name="name" required>
-      <option value="Dessert">Dessert</option>
-      <option value="Alcohol">Alcohol</option>
-      <option value="Fast Food">Fast Food</option>
-      <option value="Sugary Drink">Sugary Drink</option>
-      <option value="Snack">Snack</option>
-    </select>
-    <input type="date" name="date" required>
-    <button type="submit">Add Indulgence</button>
-  </form>
+  <button type="submit">Add to Plan</button>
+</form>
 
-  <!-- Workouts Display -->
-  <h2>Workouts</h2>
-  <ul>
-    <% @workouts.each do |workout| %>
-      <li><strong><%= workout["name"] %></strong> on <%= workout["date"] %></li>
+ <h2>Calendar</h2>
+
+<!-- Calendar Wrapper -->
+<div class="calendar-wrapper">
+  <!-- Combined Days Header + Calendar Grid -->
+  <div class="calendar-grid">
+    <!-- Days of the Week Header -->
+    <div class="day-name">Sun</div>
+    <div class="day-name">Mon</div>
+    <div class="day-name">Tue</div>
+    <div class="day-name">Wed</div>
+    <div class="day-name">Thu</div>
+    <div class="day-name">Fri</div>
+    <div class="day-name">Sat</div>
+
+    <% require 'date' %>
+    <% start_date = Date.new(Date.today.year, Date.today.month, 1) %>
+    <% end_date = Date.new(Date.today.year, Date.today.month, -1) %>
+    <% first_day_of_week = start_date.wday %>  <!-- 0 = Sunday, 6 = Saturday -->
+
+    <!-- Add empty spaces for days before the first of the month -->
+    <% first_day_of_week.times do %>
+      <div class="calendar-day empty"></div>
     <% end %>
-  </ul>
 
-  <!-- Indulgences Display -->
-  <h2>Indulgences</h2>
-  <ul>
-    <% @indulgences.each do |indulgence| %>
-      <li><strong><%= indulgence["name"] %></strong> on <%= indulgence["date"] %></li>
+    <% (start_date..end_date).each do |date| %>
+      <div class="calendar-day" data-date="<%= date.to_s %>">
+        <strong><%= date.strftime("%b %d") %></strong>
+      </div>
     <% end %>
-  </ul>
-
-  <!-- Calendar -->
-  <h2>Calendar</h2>
-  <div class="calendar-container">
-    <div class="calendar-grid">
-      <% require 'date' %>
-      <% start_date = Date.new(Date.today.year, Date.today.month, 1) %>
-      <% end_date = Date.new(Date.today.year, Date.today.month, -1) %>
-
-      <% (start_date..end_date).each do |date| %>
-        <div class="calendar-day" data-date="<%= date.to_s %>">
-          <strong><%= date.strftime("%b %d") %></strong>
-          <ul>
-            <% if @workouts_by_date[date.to_s] %>
-              <% @workouts_by_date[date.to_s].each do |workout| %>
-                <li class="workout" draggable="true" data-id="<%= workout["id"] %>">
-                  🏋️ <%= workout["name"] %>
-                </li>
-              <% end %>
-            <% end %>
-            <% if @indulgences_by_date[date.to_s] %>
-              <% @indulgences_by_date[date.to_s].each do |indulgence| %>
-                <li class="indulgence" draggable="true" data-id="<%= indulgence["id"] %>">
-                  🍔 <%= indulgence["name"] %>
-                </li>
-              <% end %>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
-    </div>
   </div>
-</body>
-</html>
+</div>

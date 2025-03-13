@@ -1,21 +1,24 @@
 /* Global Styles */
 body {
-    background-color: #2a2d32; /* Softer dark gray-blue */
-    color: #f8f9fa; /* Light gray for good contrast */
+    background-color: #2a2d32;
+    color: #f8f9fa;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* THIS ENSURES THE ENTIRE PAGE IS CENTERED */
 }
 
 /* Header */
 h1, h2 {
     text-align: center;
-    color: #ffcc66; /* Softer gold */
+    color: #ffcc66;
 }
 
 /* Forms */
 form {
-    background-color: #3a3f47; /* Slightly lighter dark gray */
+    background-color: #3a3f47;
     padding: 15px;
     border-radius: 5px;
     max-width: 400px;
@@ -31,7 +34,7 @@ input, button {
 }
 
 button {
-    background-color: #28a745; /* Softer green */
+    background-color: #28a745;
     color: white;
     border: none;
     cursor: pointer;
@@ -41,62 +44,50 @@ button:hover {
     background-color: #218838;
 }
 
-/* Calendar */
-.calendar-container {
+/* 🌟 CENTERING EVERYTHING IN THE CALENDAR 🌟 */
+.calendar-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     width: 100%;
-    max-width: 700px;
-    margin: auto;
 }
 
+/* Days of the Week Header */
+.calendar-days-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    width: fit-content;
+    text-align: center;
+    font-weight: bold;
+    background-color: #3a3f47;
+    padding: 10px;
+    border-radius: 5px;
+    color: #ffcc66;
+    margin: 0 auto;
+}
+
+/* 🌟 MAIN CALENDAR GRID (FIXED CENTERING) 🌟 */
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 5px;
-    width: 100%;
-    max-width: 700px;
+    width: fit-content;
+    margin: 0 auto;
+    text-align: center;
 }
 
+/* Calendar Days */
 .calendar-day {
     width: 100px;
     height: 100px;
-    background-color: #4a4f58; /* Medium gray */
+    background-color: #4a4f58;
     border-radius: 5px;
     padding: 5px;
-    text-align: center;
-    font-size: 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     position: relative;
-    color: #ffffff; /* White text */
-}
-
-.workout, .indulgence {
-    font-size: 12px;
-    padding: 2px;
-    background: rgba(0, 123, 255, 0.8);
-    color: white;
-    border-radius: 3px;
-    margin-top: 3px;
-    width: 90%;
-    text-align: center;
-    cursor: grab;
-}
-
-.indulgence {
-    background: rgba(255, 69, 0, 0.8); /* Softer red */
-}
-
-/* Links */
-a {
-    color: #ffcc66;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
+    color: #ffffff;
 }
