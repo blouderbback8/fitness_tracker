@@ -7,6 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const today = new Date().toISOString().split("T")[0];
     plannerDateInput.value = today;
 
+    // Function to check if Jiu-Jitsu is scheduled the next day
+    function isJiuJitsuScheduled(nextDate) {
+        const nextDayElement = document.querySelector(`.calendar-day[data-date="${nextDate}"]`);
+        if (nextDayElement) {
+            return Array.from(nextDayElement.children).some(child => child.textContent.trim() === "Jiu-Jitsu");
+        }
+        return false;
+    }
+
     // Function to add an activity to the calendar
     function addToCalendar(name, date) {
         const targetDay = document.querySelector(`.calendar-day[data-date="${date}"]`);
@@ -55,10 +64,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // Get the next day's date
         let nextDay = new Date(selectedDate);
         nextDay.setDate(nextDay.getDate() + 1);
-        let nextDayName = nextDay.toLocaleString('en-us', { weekday: 'long' });
+        let nextDayString = nextDay.toISOString().split("T")[0];
 
-        if (selectedActivity === "Alcohol" && (nextDayName === "Monday" || nextDayName === "Wednesday" || nextDayName === "Friday")) {
-            // Hide the day planner and show the warning video
+        // Prevent Alcohol if Jiu-Jitsu is already scheduled for the next day
+        if (selectedActivity === "Alcohol" && isJiuJitsuScheduled(nextDayString)) {
             document.body.innerHTML = `
             <div class="video-container">
                 <h2>Warning!</h2>
@@ -69,8 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <br>
                 <button onclick="location.reload()">Go Back</button>
             </div>
-        `;
-        
+            `;
             return;
         }
 
