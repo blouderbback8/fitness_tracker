@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Day Planner</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <script src="/calendar.js" defer></script>
+</head>
+<body>
+
+    <div class="day-planner-container">
+        <h1>Day Planner</h1>
+
+        <div class="day-planner-card">
+            <h3>Plan Your Activities</h3>
+            <form id="day-planner-form">
+                <label for="planner-date">Select a Day:</label>
+                <input type="date" id="planner-date" name="date" required>
+
+                <label for="planner-activity">Activity:</label>
+                <select id="planner-activity" name="activity">
+                    <option value="Jiu-Jitsu">Jiu-Jitsu</option>
+                    <option value="Cardio">Cardio</option>
+                    <option value="Lifting">Lifting</option>
+                    <option value="Alcohol">Alcohol</option>
+                    <option value="Dessert">Dessert</option>
+                    <option value="Fast Food">Fast Food</option>
+                </select>
+
+                <button type="submit">Add to Plan</button>
+            </form>
+        </div>
+
+        <a href="/">← Back to Calendar</a>
+    </div>
+
+</body>
+</html>

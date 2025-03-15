@@ -49,32 +49,197 @@ button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     width: 100%;
+    max-width: 700px;
+    margin: auto;
 }
+
 
 /* Days of the Week Header */
 .calendar-days-header {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    width: fit-content;
+    width: 100%;
+    max-width: 700px;
     text-align: center;
     font-weight: bold;
     background-color: #3a3f47;
-    padding: 10px;
+    padding: 10px 0;
     border-radius: 5px;
-    color: #ffcc66;
-    margin: 0 auto;
+    color: #ffcc66; /* Gold */
+    margin: auto; /* Centers it properly */
 }
+
+
 
 /* 🌟 MAIN CALENDAR GRID (FIXED CENTERING) 🌟 */
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 5px;
-    width: fit-content;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 700px;
+    margin: auto;
+}
+/* 🌟 Global Styles */
+body {
+    background-color: #2a2d32;
+    color: #f8f9fa;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Ensures everything is centered */
+}
+
+/* 🌟 Headers */
+h1, h2 {
     text-align: center;
+    color: #ffcc66;
+}
+
+/* 🌟 Forms (Day Planner) */
+form {
+    background-color: #3a3f47;
+    padding: 15px;
+    border-radius: 5px;
+    max-width: 400px;
+    margin: 10px auto;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Input fields & dropdown */
+input, select, button {
+    font-size: 14px;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid #666;
+}
+
+/* Button styles */
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+/* 🌟 Centering EVERYTHING in the Calendar */
+.calendar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 700px;
+    margin: auto;
+}
+
+/* 🌟 Days of the Week Header */
+.calendar-days-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    width: 100%;
+    max-width: 700px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #3a3f47;
+    padding: 10px 0;
+    border-radius: 5px;
+    color: #ffcc66;
+    margin-bottom: 5px;
+}
+
+/* 🌟 Main Calendar Grid (Aligned & Centered) */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    width: 100%;
+    max-width: 700px;
+    margin: auto;
+}
+
+/* 🌟 Individual Calendar Days */
+.calendar-day {
+    width: 100px;
+    height: 100px;
+    background-color: #4a4f58;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    color: #ffffff;
+}
+
+/* 🌟 Day Planner Card (Matches Calendar) */
+.day-planner-card {
+    background-color: rgba(58, 63, 71, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+    max-width: 450px;
+    margin: auto;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+/* Title inside the planner */
+.day-planner-card h3 {
+    color: #ffcc66;
+}
+
+/* 🌟 Day Planner Form */
+#day-planner-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Styled Input fields & dropdown */
+#planner-date, #planner-activity {
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #666;
+    background-color: #4a4f58;
+    color: white;
+    text-align: center;
+}
+
+/* Submit Button */
+button {
+    background-color: #28a745;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+/* 🌟 Display Planned Activities */
+#planned-activities {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #3a3f47;
+    border-radius: 5px;
+    text-align: left;
+    width: 100%;
+    max-width: 450px;
 }
 
 /* Calendar Days */
@@ -90,4 +255,60 @@ button:hover {
     justify-content: flex-start;
     position: relative;
     color: #ffffff;
+}
+
+/* 🌟 Day Planner Card - Matches Calendar Theme 🌟 */
+.day-planner-card {
+    background-color: rgba(58, 63, 71, 0.9); /* Dark gray with transparency */
+    padding: 15px;
+    border-radius: 10px;
+    max-width: 450px;
+    margin: auto;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+/* Title inside the planner */
+.day-planner-card h3 {
+    color: #ffcc66;
+}
+
+/* Day Planner Form */
+#day-planner-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Input fields & dropdown */
+#planner-date, #planner-activity {
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #666;
+    background-color: #4a4f58;
+    color: white;
+    text-align: center;
+}
+
+/* Submit Button */
+button {
+    background-color: #28a745;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+/* Display planned activities */
+#planned-activities {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #3a3f47;
+    border-radius: 5px;
+    text-align: left;
 }

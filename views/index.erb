@@ -9,52 +9,63 @@
   <h1>Fitness Tracker</h1>
 
   <h2>Day Planner</h2>
-<form id="day-planner-form">
-  <label for="planner-date">Select a Day:</label>
-  <input type="date" id="planner-date" name="date" required>
+  <div class="day-planner-card">
+    <h3>Plan Your Day</h3>
+    <form id="day-planner-form">
+        <label for="planner-date">Select a Day:</label>
+        <input type="date" id="planner-date" name="date" required>
 
-  <label for="planner-activity">Activity:</label>
-  <select id="planner-activity" name="activity">
-    <option value="Jiu-Jitsu">Jiu-Jitsu</option>
-    <option value="Cardio">Cardio</option>
-    <option value="Lifting">Lifting</option>
-    <option value="Alcohol">Alcohol</option>
-    <option value="Dessert">Dessert</option>
-    <option value="Fast Food">Fast Food</option>
-  </select>
+        <label for="planner-activity">Activity:</label>
+        <select id="planner-activity" name="activity">
+            <option value="Jiu-Jitsu">Jiu-Jitsu</option>
+            <option value="Cardio">Cardio</option>
+            <option value="Lifting">Lifting</option>
+            <option value="Alcohol">Alcohol</option>
+            <option value="Dessert">Dessert</option>
+            <option value="Fast Food">Fast Food</option>
+        </select>
 
-  <button type="submit">Add to Plan</button>
-</form>
-
- <h2>Calendar</h2>
-
-<!-- Calendar Wrapper -->
-<div class="calendar-wrapper">
-  <!-- Combined Days Header + Calendar Grid -->
-  <div class="calendar-grid">
-    <!-- Days of the Week Header -->
-    <div class="day-name">Sun</div>
-    <div class="day-name">Mon</div>
-    <div class="day-name">Tue</div>
-    <div class="day-name">Wed</div>
-    <div class="day-name">Thu</div>
-    <div class="day-name">Fri</div>
-    <div class="day-name">Sat</div>
-
-    <% require 'date' %>
-    <% start_date = Date.new(Date.today.year, Date.today.month, 1) %>
-    <% end_date = Date.new(Date.today.year, Date.today.month, -1) %>
-    <% first_day_of_week = start_date.wday %>  <!-- 0 = Sunday, 6 = Saturday -->
-
-    <!-- Add empty spaces for days before the first of the month -->
-    <% first_day_of_week.times do %>
-      <div class="calendar-day empty"></div>
-    <% end %>
-
-    <% (start_date..end_date).each do |date| %>
-      <div class="calendar-day" data-date="<%= date.to_s %>">
-        <strong><%= date.strftime("%b %d") %></strong>
-      </div>
-    <% end %>
+        <button type="submit">Add to Plan</button>
+    </form>
   </div>
-</div>
+
+  <!-- Fitness App Intro Video -->
+  <div class="video-container">
+      <h2>Welcome to the Fitness Tracker</h2>
+      <video width="600" controls>
+          <source src="/Fitness%20App%20Intro%20Video.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+      </video>
+  </div>
+
+  <h2>Calendar</h2>
+  <div class="calendar-wrapper">
+    <div class="calendar-days-header">
+      <div class="day-name">Sun</div>
+      <div class="day-name">Mon</div>
+      <div class="day-name">Tue</div>
+      <div class="day-name">Wed</div>
+      <div class="day-name">Thu</div>
+      <div class="day-name">Fri</div>
+      <div class="day-name">Sat</div>
+    </div>
+
+    <div class="calendar-grid">
+      <% require 'date' %>
+      <% start_date = Date.new(Date.today.year, Date.today.month, 1) %>
+      <% end_date = Date.new(Date.today.year, Date.today.month, -1) %>
+      <% first_day_of_week = start_date.wday %>
+
+      <% first_day_of_week.times do %>
+        <div class="calendar-day empty"></div>
+      <% end %>
+
+      <% (start_date..end_date).each do |date| %>
+        <div class="calendar-day" data-date="<%= date.to_s %>">
+          <strong><%= date.strftime("%b %d") %></strong>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</body>
+</html>

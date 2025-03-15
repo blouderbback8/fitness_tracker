@@ -41,28 +41,22 @@ get '/' do
   erb :index
 end
 
-# Route to add a new workout (Prevents Jiu-Jitsu after Alcohol)
+# Route to show the day planner page
+get '/day_planner' do
+  erb :day_planner
+end
+
+# Route to add a new workout
 post '/add_workout' do
-  name = params[:name]
-  date = params[:date]
-  duration = params[:duration]
-
-  # Check if the user drank alcohol the day before
-  parsed_date = Date.parse(date)
-  previous_date = parsed_date - 1
-  drank_yesterday = DB.execute("SELECT * FROM indulgences WHERE name = 'Alcohol' AND date = ?", [previous_date.to_s]).any?
-
-  if name == "Jiu-Jitsu" && drank_yesterday
-    halt 400, "🚫 You drank alcohol yesterday. No Jiu-Jitsu today."
-  end
-
-  DB.execute("INSERT INTO workouts (name, date, duration) VALUES (?, ?, ?)", [name, date, duration])
+  DB.execute("INSERT INTO workouts (name, date, duration) VALUES (?, ?, ?)",
+             [params[:name], params[:date], params[:duration]])
   redirect '/'
 end
 
-# Route to add a new indulgence
+# Route to add a new indulgence (without calories)
 post '/add_indulgence' do
-  DB.execute("INSERT INTO indulgences (name, date) VALUES (?, ?)", [params[:name], params[:date]])
+  DB.execute("INSERT INTO indulgences (name, date) VALUES (?, ?)",
+             [params[:name], params[:date]])
   redirect '/'
 end
 
@@ -77,29 +71,13 @@ post '/update_date' do
   status 200
 end
 
-# 🔥 Route to delete a workout or indulgence (Drag-and-drop trash bin feature)
-post '/delete_item' do
-  request_data = JSON.parse(request.body.read)
-  id = request_data["id"]
-  type = request_data["type"]
+# Route to debug and view database contents
+get '/debug_db' do
+  workouts = DB.execute("SELECT * FROM workouts")
+  indulgences = DB.execute("SELECT * FROM indulgences")
 
-  if type == "workout"
-    DB.execute("DELETE FROM workouts WHERE id = ?", [id])
-  elsif type == "indulgence"
-    DB.execute("DELETE FROM indulgences WHERE id = ?", [id])
-  else
-    halt 400, "Invalid item type"
-  end
-
-  status 200
-end
-
-
-# API Route to Fetch Indulgences for JavaScript Validation
-get '/indulgences.json' do
   content_type :json
-  indulgences = DB.execute("SELECT name, date FROM indulgences")
-  indulgences.to_json
+  { workouts: workouts, indulgences: indulgences }.to_json
 end
 
 # Explicit routes for CSS and JS
