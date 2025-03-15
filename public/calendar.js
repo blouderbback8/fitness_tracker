@@ -59,17 +59,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (selectedActivity === "Alcohol" && (nextDayName === "Monday" || nextDayName === "Wednesday" || nextDayName === "Friday")) {
             // Hide the day planner and show the warning video
-            document.body.innerHTML = 
-                <div class="video-container">
-                    <h2>Warning!</h2>
-                    <video width="600" controls autoplay>
-                        <source src="/No_Alcohol_Before_BJJ.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    <br>
-                    <button onclick="location.reload()">Go Back</button>
-                </div>
-            ;
+            document.body.innerHTML = `
+            <div class="video-container">
+                <h2>Warning!</h2>
+                <video width="600" controls autoplay>
+                    <source src="No_Alcohol_Before_BJJ.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <br>
+                <button onclick="location.reload()">Go Back</button>
+            </div>
+        `;
+        
             return;
         }
 
