@@ -53,10 +53,20 @@ post '/add_workout' do
   redirect '/'
 end
 
-# Route to add a new indulgence (without calories)
+# Route to add a new indulgence (forces cardio the next day)
 post '/add_indulgence' do
-  DB.execute("INSERT INTO indulgences (name, date) VALUES (?, ?)",
-             [params[:name], params[:date]])
+  indulgence_name = params[:name]
+  indulgence_date = params[:date]
+  
+  # Insert the indulgence into the database
+  DB.execute("INSERT INTO indulgences (name, date) VALUES (?, ?)", [indulgence_name, indulgence_date])
+  
+  # If indulgence requires cardio, force cardio the next day
+  if ["Alcohol", "Dessert", "Fast Food"].include?(indulgence_name)
+    next_day = (Date.parse(indulgence_date) + 1).to_s
+    DB.execute("INSERT INTO workouts (name, date, duration) VALUES ('Cardio', ?, 30)", [next_day])
+  end
+
   redirect '/'
 end
 

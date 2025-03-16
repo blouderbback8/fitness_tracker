@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 activityItem.style.backgroundColor = "#dc3545";
             } else if (["Fast Food", "Dessert"].includes(name)) {
                 activityItem.style.backgroundColor = "#ffcc00";
-            } else {
+            } else if (name === "Cardio") {
                 activityItem.style.backgroundColor = "#28a745";
             }
 
@@ -82,7 +82,12 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // If the rule is followed, add the activity to the calendar
+        // Add indulgence to calendar
         addToCalendar(selectedActivity, selectedDate);
+
+        // Always add Cardio the next day if indulgence is logged
+        if (["Alcohol", "Fast Food", "Dessert"].includes(selectedActivity)) {
+            addToCalendar("Cardio", nextDayString);
+        }
     });
 });
