@@ -229,18 +229,9 @@ button {
 
 button:hover {
     background-color: #218838;
+    
 }
 
-/* 🌟 Display Planned Activities */
-#planned-activities {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #3a3f47;
-    border-radius: 5px;
-    text-align: left;
-    width: 100%;
-    max-width: 450px;
-}
 
 /* Calendar Days */
 .calendar-day {
